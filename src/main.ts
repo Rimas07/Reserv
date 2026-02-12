@@ -5,6 +5,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
+import { Response } from 'express';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -12,7 +13,10 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.enableCors({ origin: true, credentials: true });
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.useStaticAssets(join(process.cwd(), 'public'));
+
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.get('/', (_req: any, res: Response) => res.redirect('/booking.html'));
 
   const config = new DocumentBuilder()
     .setTitle('Rezervachka - Online Booking')
